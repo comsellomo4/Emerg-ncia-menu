@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Emergência - Viagem Segura</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:"Segoe UI",sans-serif;
+}
+
+body{
+background:linear-gradient(160deg,#07083b,#0B0D4D,#03042a);
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+/* TELA */
+
+.tela{
+width:360px;
+padding:28px;
+animation:entradaTela .9s ease;
+}
+
+/* ANIMAÇÃO DA TELA */
+
+@keyframes entradaTela{
+0%{
+opacity:0;
+transform:translateY(40px) scale(.95);
+}
+100%{
+opacity:1;
+transform:translateY(0) scale(1);
+}
+}
+
+/* LOGO */
+
+.logo{
+width:70px;
+display:block;
+margin:auto;
+margin-bottom:12px;
+}
+
+/* TITULO */
+
+.titulo{
+text-align:center;
+font-size:26px;
+font-weight:bold;
+}
+
+.titulo span{
+color:#FF9800;
+}
+
+.sub{
+text-align:center;
+font-size:14px;
+opacity:.8;
+margin-top:6px;
+margin-bottom:25px;
+}
+
+/* LOCALIZAÇÃO */
+
+.localizacao{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(12px);
+border:1px solid rgba(255,152,0,.45);
+border-radius:14px;
+padding:14px;
+text-align:center;
+font-size:13px;
+margin-bottom:24px;
+animation:pulse 3s infinite;
+}
+
+@keyframes pulse{
+0%{box-shadow:0 0 0 rgba(255,152,0,0);}
+50%{box-shadow:0 0 14px rgba(255,152,0,.45);}
+100%{box-shadow:0 0 0 rgba(255,152,0,0);}
+}
+
+/* BOTÃO SOS */
+
+.sos{
+width:100%;
+background:linear-gradient(145deg,#FF9800,#ffb74d);
+border:none;
+color:#0B0D4D;
+padding:16px;
+border-radius:35px;
+font-weight:bold;
+font-size:16px;
+margin-bottom:18px;
+cursor:pointer;
+transition:.25s;
+box-shadow:0 6px 20px rgba(0,0,0,.4);
+animation:sosPulse 2s infinite;
+}
+
+.sos:hover{
+transform:translateY(-3px);
+}
+
+@keyframes sosPulse{
+
+0%{
+box-shadow:0 0 0 0 rgba(255,152,0,.6);
+}
+
+70%{
+box-shadow:0 0 0 15px rgba(255,152,0,0);
+}
+
+100%{
+box-shadow:0 0 0 0 rgba(255,152,0,0);
+}
+
+}
+
+/* CARDS */
+
+.card{
+background:rgba(255,255,255,0.06);
+border:1px solid rgba(255,152,0,0.45);
+border-radius:18px;
+padding:16px;
+margin-bottom:14px;
+cursor:pointer;
+font-weight:600;
+text-align:center;
+transition:.25s;
+opacity:0;
+transform:translateY(20px);
+animation:subir .6s ease forwards;
+}
+
+.card:hover{
+background:#FF9800;
+color:#0B0D4D;
+transform:translateY(-3px);
+box-shadow:0 8px 20px rgba(0,0,0,.35);
+}
+
+/* SEQUÊNCIA DOS CARDS */
+
+.card:nth-of-type(1){animation-delay:.3s;}
+.card:nth-of-type(2){animation-delay:.45s;}
+.card:nth-of-type(3){animation-delay:.6s;}
+.card:nth-of-type(4){animation-delay:.75s;}
+
+@keyframes subir{
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* BOTÃO VOLTAR */
+
+.voltar{
+margin-top:18px;
+width:100%;
+background:transparent;
+border:2px solid #FF9800;
+color:#FF9800;
+padding:14px;
+border-radius:28px;
+font-weight:bold;
+cursor:pointer;
+transition:.25s;
+}
+
+.voltar:hover{
+background:#FF9800;
+color:#0B0D4D;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="tela">
+
+<img class="logo" src="https://i.postimg.cc/BbP6W58Z/Picsart-26-03-12-20-29-22-255.png">
+
+<div class="titulo">
+EMERGÊNCIA <span>SOS</span>
+</div>
+
+<div class="sub">
+Acesso rápido aos serviços de emergência em qualquer lugar do Brasil.
+</div>
+
+<div class="localizacao" id="local">
+📍 Detectando sua localização...
+</div>
+
+<button class="sos" onclick="ligar('190')">
+🚨 BOTÃO SOS (POLÍCIA)
+</button>
+
+<div class="card" onclick="ligar('192')">
+🚑 SAMU — Atendimento Médico
+</div>
+
+<div class="card" onclick="ligar('193')">
+🚒 Corpo de Bombeiros
+</div>
+
+<div class="card" onclick="ligar('191')">
+🚔 Polícia Rodoviária Federal
+</div>
+
+<div class="card" onclick="abrirMapa()">
+🗺 Abrir minha localização no mapa
+</div>
+
+<button class="voltar" onclick="voltarMenu()">
+VOLTAR AO MENU
+</button>
+
+</div>
+
+<script>
+
+let latitude
+let longitude
+
+function pegarLocalizacao(){
+
+if(navigator.geolocation){
+
+navigator.geolocation.getCurrentPosition(function(pos){
+
+latitude = pos.coords.latitude
+longitude = pos.coords.longitude
+
+document.getElementById("local").innerHTML =
+"📍 Localização detectada<br>"+
+"Lat: "+latitude.toFixed(5)+" | Lon: "+longitude.toFixed(5)
+
+},function(){
+
+document.getElementById("local").innerHTML =
+"⚠ Não foi possível acessar sua localização"
+
+})
+
+}else{
+
+document.getElementById("local").innerHTML =
+"❌ GPS não suportado"
+
+}
+
+}
+
+function ligar(numero){
+window.location.href="tel:"+numero
+}
+
+function abrirMapa(){
+
+if(latitude && longitude){
+
+window.open("https://www.google.com/maps?q="+latitude+","+longitude)
+
+}else{
+
+alert("Localização ainda não detectada")
+
+}
+
+}
+
+function voltarMenu(){
+window.history.back()
+}
+
+pegarLocalizacao()
+
+</script>
+
+</body>
+</html>
